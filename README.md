@@ -15,7 +15,9 @@ Optional:
 
 - The default setting of 10 orgs takes a while, because we keep running
   out of precreated orgs under EC 11.  It still finishes, it just takes
-  some retries.
+  some retries. There is a private-chef.rb in this directory that you
+  can copy in to /etc/opscode before initial reconfigure that will
+  org precreation speed and depth.
 
 
 === What it Does
@@ -32,6 +34,7 @@ retrieved and compared compared after an upgrade or migration for any discrepenc
 === TODO - Short Term
 - [x] add support for creating clients per org
 - [x] add support for creating groups
+- [x] add support for group within group memebrshi
 - [ ] add support for setting custom acls, at minimum on groups but
       ideally across the range of supported objects.
 - [ ] add support to grab all the data afterwords, and compare it to
