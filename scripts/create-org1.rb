@@ -88,9 +88,9 @@ BEGIN {
 
     api.put("organizations/#{orgname}/groups/#{groupname}", g2)
     @orgs[orgname]["groups"][groupname] = {} # we're going to overwrite it with what the server just told us anyway...
-    @orgs[orgname]["groups"][groupname][:users] = g2["actors"]["users"]
-    @orgs[orgname]["groups"][groupname][:clients] = g2["actors"]["clients"]
-    @orgs[orgname]["groups"][groupname][:groups] = g2["actors"]["groups"]
+    @orgs[orgname]["groups"][groupname]["users"] = g2["actors"]["users"]
+    @orgs[orgname]["groups"][groupname]["clients"] = g2["actors"]["clients"]
+    @orgs[orgname]["groups"][groupname]["groups"] = g2["actors"]["groups"]
   end
 
   def create_org_client(orgname, validator)
