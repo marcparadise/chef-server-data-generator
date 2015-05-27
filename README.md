@@ -1,3 +1,13 @@
+=== What it Does ===
+This tool will generate orgs, users on a server using the pivotal user.
+It will select users at random to put into each org (using the
+configured number of per-org users), and from those users will randomly
+pick the configured number of admins and add them to the admins group.
+
+It will capture everything it generates into one or more yml files
+(currently just created-orgs-and-users.yml) so that this data can be
+retrieved and compared compared after an upgrade or migration for any discrepencies.
+
 
 === Usage ===
 
@@ -19,17 +29,9 @@
   can copy in to /etc/opscode before initial reconfigure that will
   org precreation speed and depth.
 
-=== What it Does ===
-This tool will generate orgs, users on a server using the pivotal user.
-It will select users at random to put into each org (using the
-configured number of per-org users), and from those users will randomly
-pick the configured number of admins and add them to the admins group.
+=== TODO ===
 
-It will capture everything it generates into one or more yml files
-(currently just created-orgs-and-users.yml) so that this data can be
-retrieved and compared compared after an upgrade or migration for any discrepencies.
-
-=== TODO - Short Term
+==== Short Term ====
 - [x] add support for creating clients per org
 - [x] add support for creating groups
 - [x] add support for group within group memebrshi
@@ -37,7 +39,7 @@ retrieved and compared compared after an upgrade or migration for any discrepenc
       ideally across the range of supported objects.
 - [ ] org invite creation and validation - is this in ec backup? (yes to
       2.x but what about 1.x? )
-
+- [ ] OSC11.2 support
 - [ ] knife ec backup: better to have a ruby 2 install on this vm so
       that we can start with 2.x?
 - [ ] add support to grab all the data afterwords, and compare it to
@@ -45,7 +47,7 @@ retrieved and compared compared after an upgrade or migration for any discrepenc
       any additional output files.
 - [ ] alt2 - can we just knife ec backup and compare before/after?
 
-=== TODO - Longer Term
+==== Longer Term ====
 - [ ] better directory structure. Better names for files...
 - [ ] generate knife.rb for each created user/client. Directories for
   each?
