@@ -27,18 +27,15 @@ pre_migration.each do |file|
       pre = { :wrapper => pre }
       post = { :wrapper => post }
     end
-    tweaked = false
     removed, added = EasyDiff::Core.easy_diff pre, post
     if removed.has_key?("certificate")  and added.has_key?("public_key") and added.keys.length == removed.keys.length
       key_replacements << file
       removed.delete "certificate"
       added.delete "public_key"
-      tweaked = true
     elsif removed.has_key?("public_key") and added.has_key? "public_key" and added["public_key"].strip == removed["public_key"].strip
       key_newline_diff << file
       removed.delete "public_key"
       added.delete "public_key"
-      tweaked = true
     end
     if removed.keys.length == 0 and added.keys.length == 0
       matches << file
@@ -59,10 +56,8 @@ post_migration.each do |file|
 end
 
 puts YAML.dump( { "Errors" => errors,
-             "Differences Found" => differences,
-             "Not Present Post-Migration" => missing_in_post,
-             "New Post-Migration" =>  missing_in_pre,
-             "Certs Replaced With Keys" => key_replacements,
-             "Key Newline Mismatch" => key_newline_diff
-})
-
+                  "Differences Found" => differences,
+                  "Not Present Post-Migration" => missing_in_post,
+                  "New Post-Migration" =>  missing_in_pre,
+                  "Certs Replaced With Keys" => key_replacements,
+                  "Key Newline Mismatch" => key_newline_diff })
