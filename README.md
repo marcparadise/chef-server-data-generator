@@ -1,6 +1,6 @@
 ### What it Does
 
-This tool will generate the following: 
+This tool will generate the following on any EC11 or CS12 server for which it has access to `/etc/opscode/pivotal.pem`
 * orgs
 * users
 * groups 
