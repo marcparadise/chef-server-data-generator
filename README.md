@@ -3,27 +3,77 @@
 This tool will generate the following on any EC11 or CS12 server for which it has access to `/etc/opscode/pivotal.pem`
 * orgs
 * users
-* groups 
+* groups
 * clients
-* user-org associations 
+* user-org associations
 
-In addition, users will be populated into orgs and org admin groups at the rate specified in `setup.yml`.  Users, clients, and groups within an org will be added more-or-less randomly to the groups created by the tool. 
+In addition, users will be populated into orgs and org admin groups at the rate specified in `setup.yml`.  Users, clients, and groups within an org will be added more-or-less randomly to the groups created by the tool.
 
 It will capture everything it generates into one or more yml files
-(currently just testdata/created-object.yml) so that this data can be 
+(currently just testdata/created-object.yml) so that this data can be
 retrieved and compared compared after an upgrade or migration for any discrepencies.
 
 ### Usage
 
-1. vagrant up
-2. ssh into the box and install the chef server flavor
-   of your choice via dpkg
-3. cd /vagrant
-4. ./setup.sh
+```bash
+vagrant up
+vagrant ssh
+sudo -s
+cd /vagrant
+dpkg -i $private-chef-installer.deb
+./setup.sh
+```
 
 #### Optional
 
-- before running setup.sh, copy setup.yml.example to setup.yml and customize
+- before running setup.sh, copy `setup.yml.example` to `setup.yml` and customize
+
+#### Upgrade and Delta Capture (Work in Progress)
+
+#### On the Guest ####
+Once the above is complete, you'll need to capture the current state of
+data for comparison after the upgrade. To do that, run:
+
+First, capture the current state of the server for comparison
+post-upgrade. To do that:
+
+```bash
+vagrant ssh
+sudo -s
+cd /vagrant
+./pre-migration-backup.sh
+```
+
+After this is done (it will take a while), continue with:
+
+```bash
+sudo -s
+private-chef-ctl stop
+dpkg -i /vagrant/new-chef-server-core.deb
+chef-server-ctl upgrade
+chef-server-ctl start
+```
+
+Then capture the server state post-migration (again, this will take some
+time):
+
+```bash
+./post-migration-backup.sh
+```
+
+#### On the Host ####
+
+Run the diff.rb program to capture the diff.  This tool is currently aware of
+the 11.x -> 12.x upgrade and does some diff suppression for things that are expected but
+noisy. Perform the following from the repository root:
+
+```bash
+gem install easy_diff
+ruby ./diff.rb  > testdata/delta.yml
+```
+
+The file `testdata/delta.yml` will contain the diff between pre- and post
+upgrade.
 
 #### Notes
 
@@ -33,23 +83,17 @@ retrieved and compared compared after an upgrade or migration for any discrepenc
   can copy in to /etc/opscode before initial reconfigure that will
   org precreation speed and depth.
 
-### TODO 
+### TODO
 
-#### Short Term 
-- [x] add support for creating clients per org
-- [x] add support for creating groups
-- [x] add support for group within group memebrshi
+#### Short Term
 - [ ] add support for setting custom acls, at minimum on groups but
       ideally across the range of supported objects.
 - [ ] org invite creation and validation - is this in ec backup? (yes to
       2.x but what about 1.x? )
 - [ ] OSC11.2 support
 - [ ] knife ec backup: better to have a ruby 2 install on this vm so
-      that we can start with 2.x?
-- [ ] add support to grab all the data afterwords, and compare it to
-      what we've created and captured in 'created-orgs-and-users.yml' and
-      any additional output files.
-- [ ] alt2 - can we just knife ec backup and compare before/after?
+      that we can start with 2.x? Currently it's a little broken,
+      getting ec installed.
 
 #### Longer Term
 - [ ] better directory structure. Better names for files...
@@ -58,4 +102,14 @@ retrieved and compared compared after an upgrade or migration for any discrepenc
 - [ ] node creation and runlists
 - [ ] simple cookbook generation and upload per-org
 - [ ] as node client, grab the resolved runlist and make sure it's right
-      - maybe even a whyrun-mode CCR?
+- [ ] diff tool - give it a gemfile, etc, etc.
+- [ ] Diff handling: make diff handling smarter, with awareness of
+  expected differences between two give versions.  Currently it's
+  more-or-less hard-coded for EC11 -> CS12 but it should handle a
+  reasonable range of from..target versions
+
+#### TODONE
+- [x] add support for creating clients per org
+- [x] add support for creating groups
+- [x] add support for group within group memebrshi
+- [x] alt2 - can we just knife ec backup and compare before/after?
