@@ -2,3 +2,5 @@ created-orgs-and-users.yml
 setup.yml
 .vagrant/
 .chef/*.pem
+*.deb
+*.rpm
