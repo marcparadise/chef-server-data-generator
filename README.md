@@ -30,14 +30,14 @@ retrieved and compared compared after an upgrade or migration for any discrepenc
 
 
 === TODO - Short Term
-- [ ] add support for creating clients per org (likely need a separate
-  script with context/auth per-org.
-- [ ] add support for creating groups
+- [x] add support for creating clients per org
+- [x] add support for creating groups
 - [ ] add support for setting custom acls, at minimum on groups but
       ideally across the range of supported objects.
 - [ ] add support to grab all the data afterwords, and compare it to
-  what we've created and captured in 'created-orgs-and-users.yml' and
-  any additional output files.
+      what we've created and captured in 'created-orgs-and-users.yml' and
+      any additional output files.
+- [ ] alt2 - can we just knife ec backup and compare before/after?
 
 === TODO - Longer Term
 - [ ] better directory structure. Better names for files...
@@ -46,3 +46,4 @@ retrieved and compared compared after an upgrade or migration for any discrepenc
 - [ ] node creation and runlists
 - [ ] simple cookbook generation and upload per-org
 - [ ] as node client, grab the resolved runlist and make sure it's right
+      - maybe even a whyrun-mode CCR?

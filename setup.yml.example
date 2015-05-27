@@ -1,8 +1,9 @@
 users:
-  count: 50
+  count: 20
 orgs:
   count: 10
   per_org:
-    users: 10
-    admins: 2
+    users: 3
+    admins: 1
+    groups: 5
     clients: 30
