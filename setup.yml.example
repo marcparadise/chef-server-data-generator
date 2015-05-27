@@ -1,0 +1,8 @@
+users:
+  count: 50
+orgs:
+  count: 10
+  per_org:
+    users: 10
+    admins: 2
+    clients: 30
