@@ -1,14 +1,17 @@
 ### What it Does
 
-This tool will generate orgs, users on a server using the pivotal user.
-It will select users at random to put into each org (using the
-configured number of per-org users), and from those users will randomly
-pick the configured number of admins and add them to the admins group.
+This tool will generate the following: 
+* orgs
+* users
+* groups 
+* clients
+* user-org associations 
+
+In addition, users will be populated into orgs and org admin groups at the rate specified in `setup.yml`.  Users, clients, and groups within an org will be added more-or-less randomly to the groups created by the tool. 
 
 It will capture everything it generates into one or more yml files
-(currently just created-orgs-and-users.yml) so that this data can be
+(currently just testdata/created-object.yml) so that this data can be 
 retrieved and compared compared after an upgrade or migration for any discrepencies.
-
 
 ### Usage
 
