@@ -19,7 +19,6 @@ Optional:
   can copy in to /etc/opscode before initial reconfigure that will
   org precreation speed and depth.
 
-
 === What it Does
 This tool will generate orgs, users on a server using the pivotal user.
 It will select users at random to put into each org (using the
@@ -29,7 +28,6 @@ pick the configured number of admins and add them to the admins group.
 It will capture everything it generates into one or more yml files
 (currently just created-orgs-and-users.yml) so that this data can be
 retrieved and compared compared after an upgrade or migration for any discrepencies.
-
 
 === TODO - Short Term
 - [x] add support for creating clients per org
