@@ -1,4 +1,5 @@
-=== What it Does ===
+### What it Does
+
 This tool will generate orgs, users on a server using the pivotal user.
 It will select users at random to put into each org (using the
 configured number of per-org users), and from those users will randomly
@@ -9,7 +10,7 @@ It will capture everything it generates into one or more yml files
 retrieved and compared compared after an upgrade or migration for any discrepencies.
 
 
-=== Usage ===
+### Usage
 
 1. vagrant up
 2. ssh into the box and install the chef server flavor
@@ -17,11 +18,11 @@ retrieved and compared compared after an upgrade or migration for any discrepenc
 3. cd /vagrant
 4. ./setup.sh
 
-==== Optional ====
+#### Optional
 
 - before running setup.sh, copy setup.yml.example to setup.yml and customize
 
-=== Notes ===
+#### Notes
 
 - The default setting of 10 orgs takes a while, because we keep running
   out of precreated orgs under EC 11.  It still finishes, it just takes
@@ -29,9 +30,9 @@ retrieved and compared compared after an upgrade or migration for any discrepenc
   can copy in to /etc/opscode before initial reconfigure that will
   org precreation speed and depth.
 
-=== TODO ===
+### TODO 
 
-==== Short Term ====
+#### Short Term 
 - [x] add support for creating clients per org
 - [x] add support for creating groups
 - [x] add support for group within group memebrshi
@@ -47,7 +48,7 @@ retrieved and compared compared after an upgrade or migration for any discrepenc
       any additional output files.
 - [ ] alt2 - can we just knife ec backup and compare before/after?
 
-==== Longer Term ====
+#### Longer Term
 - [ ] better directory structure. Better names for files...
 - [ ] generate knife.rb for each created user/client. Directories for
   each?
