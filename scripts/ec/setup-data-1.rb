@@ -1,10 +1,11 @@
 require 'securerandom'
 require 'yaml'
+require File.expand_path('../../data_creation', __FILE__)
 
 begin
-  @create_parms = YAML.load_file("setup.yml")
+  @create_parms = YAML.load_file("setup.yml")["ec"]
 rescue
-  @create_parms = YAML.load_file("setup.yml.example")
+  @create_parms = YAML.load_file("setup.yml.example")["ec"]
 end
 
 @time_identifier = Time.now.to_i
@@ -16,6 +17,7 @@ users_per_org = @create_parms["orgs"]["per_org"]["users"]
 admins_per_org = @create_parms["orgs"]["per_org"]["admins"]
 clients_per_org = @create_parms["orgs"]["per_org"]["clients"]
 groups_per_org =  @create_parms["orgs"]["per_org"]["groups"]
+nodes_per_org =  @create_parms["orgs"]["per_org"]["nodes"]
 
 num_users.times do |x|
   # Not impossible that we'll see periodic duplicates here,
@@ -44,8 +46,12 @@ num_orgs.times do
     owning_group = member_groups.shift
     add_to_group(org_name, owning_group, { :groups => member_groups} )
   end
+
+  nodes_per_org.times do |x|
+      create_node("node-#{@time_identifier}-#{SecureRandom.hex(4)}", "/organizations/#{ore_name}")
+  end
   # Sanity check:
-   g = api.get("organizations/#{org_name}/groups/admins")
+  g = api.get("organizations/#{org_name}/groups/admins")
   puts "DEBUG: ADMIN GROUP NOW IS: #{g.inspect}"
 end
 
@@ -126,6 +132,7 @@ BEGIN {
     add_to_group(name, "billing-admins", {:users => admins} )
 
   end
+
   def random_elements(min, max, ary)
     # Trusting you to pass in valid min/max here...
     count = rand(max - min) + min
