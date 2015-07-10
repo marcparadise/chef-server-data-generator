@@ -24,6 +24,18 @@ dpkg -i $private-chef-installer.deb
 ./setup.sh
 ```
 
+Then on Enterprise Chef 11 and Chef Server 12:
+
+```
+./setup-ec.sh
+```
+
+On Open Source Chef Server 11:
+
+```
+./setup-osc.sh
+```
+
 #### Optional
 
 - before running setup.sh, copy `setup.yml.example` to `setup.yml` and customize
