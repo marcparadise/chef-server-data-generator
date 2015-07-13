@@ -67,7 +67,14 @@ BEGIN {
   def create_user(name)
     puts "...creating user #{name}"
     user = api.post("users",  { "display_name" => name, "email" => "#{name}@testing.com", "username"=> name, "password" => "password"})
-    File.open("testdata/keys/#{name}.pem", "w") { |f| f.write(user['private_key']) }
+    if user['private_key'].nil?
+      # API V1, delete user and try again with proper request
+      api.delete("users/#{name}")
+      user = api.post("users",  { "display_name" => name, "email" => "#{name}@testing.com", "username"=> name, "password" => "password", "create_key" => true})
+      File.open("testdata/keys/#{name}.pem", "w") { |f| f.write(user['chef_key']['private_key']) }
+    else
+      File.open("testdata/keys/#{name}.pem", "w") { |f| f.write(user['private_key']) }
+    end
     @user_names << name
   end
 
@@ -100,8 +107,13 @@ BEGIN {
   def create_org_client(org_name, validator)
     client_name = "client-#{SecureRandom.hex(4)}-#{org_name}"
     puts  "... creating client #{client_name}"
-    result = api.post("organizations/#{org_name}/clients", { "clientname" => client_name, "validator" => validator, "private_key" => true })
-    File.open("testdata/keys/#{client_name}.pem", "w") { |f| f.write(result['private_key']) }
+    begin # API V0
+      result = api.post("organizations/#{org_name}/clients", { "clientname" => client_name, "validator" => validator, "private_key" => true })
+      File.open("testdata/keys/#{client_name}.pem", "w") { |f| f.write(result['private_key']) }
+    rescue # API V1
+      result = api.post("organizations/#{org_name}/clients", { "clientname" => client_name, "validator" => validator, "create_key" => true })
+      File.open("testdata/keys/#{client_name}.pem", "w") { |f| f.write(result['chef_key']['private_key']) }
+    end
     @orgs[org_name]["clients"] << client_name
   end
 
