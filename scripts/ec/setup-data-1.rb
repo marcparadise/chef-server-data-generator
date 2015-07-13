@@ -17,7 +17,8 @@ users_per_org = @create_parms["orgs"]["per_org"]["users"]
 admins_per_org = @create_parms["orgs"]["per_org"]["admins"]
 clients_per_org = @create_parms["orgs"]["per_org"]["clients"]
 groups_per_org =  @create_parms["orgs"]["per_org"]["groups"]
-nodes_per_org =  @create_parms["orgs"]["per_org"]["nodes"]
+nodes_per_org = @create_parms["orgs"]["per_org"]["nodes"]
+roles_per_org = @create_parms["orgs"]["per_org"]["roles"]
 
 num_users.times do |x|
   # Not impossible that we'll see periodic duplicates here,
@@ -47,11 +48,9 @@ num_orgs.times do
     add_to_group(org_name, owning_group, { :groups => member_groups} )
   end
 
-  nodes_per_org.times do |x|
-      create_node("node-#{@time_identifier}-#{SecureRandom.hex(4)}", "/organizations/#{ore_name}")
-  end
   # Sanity check:
   g = api.get("organizations/#{org_name}/groups/admins")
+
   puts "DEBUG: ADMIN GROUP NOW IS: #{g.inspect}"
 end
 
@@ -67,7 +66,7 @@ BEGIN {
 
   def create_user(name)
     puts "...creating user #{name}"
-    user = api.post("users",  { "display_name" => name, "email" => "#{name}@#testing.com", "username"=> name, "password" => "password"})
+    user = api.post("users",  { "display_name" => name, "email" => "#{name}@testing.com", "username"=> name, "password" => "password"})
     File.open("testdata/keys/#{name}.pem", "w") { |f| f.write(user['private_key']) }
     @user_names << name
   end
@@ -130,6 +129,23 @@ BEGIN {
                      "clients" => ["#{name}-validator"] }
     add_to_group(name, "admins", {:users => admins} )
     add_to_group(name, "billing-admins", {:users => admins} )
+
+    # write a knife config for each admin to perform admin specific actions
+    chef_server_url = Chef::Config['chef_server_url']
+    admins.each do |admin|
+      knife = "testdata/admin-config/#{admin}.rb"
+      knife_content = <<-EOH
+current_dir = File.dirname(__FILE__)
+chef_server_url "#{chef_server_url}/organizations/#{name}"
+node_name "#{admin}"
+client_key "\#{current_dir}/../keys/#{admin}.pem"
+ssl_verify_mode :verify_none
+cookbook_path [ "\#{current_dir}/../../cookbooks" ]
+EOH
+      File.open(knife, "w") do |f|
+        f.write(knife_content)
+      end
+    end
 
   end
 

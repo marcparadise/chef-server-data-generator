@@ -9,6 +9,11 @@ ec:
       groups: 5
       clients: 30
       nodes: 50
+      roles: 20
+      data_bags:
+        count: 20
+        items_per_bag: 5
+        keys_per_bag: 20
 osc:
   users:
     count: 20

@@ -11,9 +11,6 @@ end
 @time_identifier = Time.now.to_i
 @user_names = []
 @client_names = []
-@node_names = []
-@role_names = []
-@data_bag_names = []
 num_users = @create_parms["users"]["count"]
 num_admin_users = @create_parms["users"]["admins"]
 num_clients = @create_parms["clients"]["count"]
@@ -66,13 +63,13 @@ end
 # create roles
 puts "CREATING ROLES"
 num_roles.times do |x|
-  create_role("role-#{@time_identifier}-#{SecureRandom.hex(4)}")
+  create_role("role-#{@time_identifier}-#{SecureRandom.hex(4)}", "")
 end
 
 # create data bags
 puts "CREATING DATA BAGS"
 num_data_bags.times do |x|
-  create_data_bag("data-bag-#{@time_identifier}-#{SecureRandom.hex(4)}", items_per_bag, keys_per_bag)
+  create_data_bag("data-bag-#{@time_identifier}-#{SecureRandom.hex(4)}", items_per_bag, keys_per_bag, @time_identifier, "")
 end
 
 ##################################################################################
@@ -89,32 +86,6 @@ BEGIN {
     client = api.post("clients",  { "name" => name, "admin" => admin, "validator" => validator})
     File.open("testdata/keys/#{name}.pem", "w") { |f| f.write(client['private_key']) }
     @client_names << name
-  end
-
-  def create_role(name)
-    puts "...creating role #{name}"
-    run_list = ["recipe[unicorn]", "recipe[apache2]"]
-    api.post("roles",  { "name" => name, "default_attributes" => {},  "description" => "A role",  "override_attributes" => {}, "run_list" => run_list})
-    @role_names << name
-  end
-
-  def create_data_bag(name, items_per_bag, keys_per_bag)
-    puts "...creating data bag #{name}"
-    items_per_bag.times do |x|
-      "data-bag-item-#{@time_identifier}-#{SecureRandom.hex(4)}"
-    end
-    api.post("data",  { "name" => name })
-    @data_bag_names << name
-
-    items_per_bag.times do |y|
-      item_name = "data-bag-item-#{@time_identifier}-#{SecureRandom.hex(4)}"
-      payload = {"id" => item_name}
-
-      keys_per_bag.times do |z|
-        payload["key#{z}"] = "value#{z}"
-      end
-      api.post("data/#{name}", payload)
-    end
   end
 
 }

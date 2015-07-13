@@ -102,7 +102,8 @@ upgrade.
       ideally across the range of supported objects.
 - [ ] org invite creation and validation - is this in ec backup? (yes to
       2.x but what about 1.x? )
-- [ ] OSC11.2 support
+- [ ] OSC 11.2 support for data verification
+- [ ] Environments to OSC and EC data generation
 - [ ] knife ec backup: better to have a ruby 2 install on this vm so
       that we can start with 2.x? Currently it's a little broken,
       getting ec installed.
